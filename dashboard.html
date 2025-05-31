@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Register Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Asset Register</h2>
+                <p class="sidebar-subtitle">Management System</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="showSection('dashboard')">
+                        <span class="nav-icon">📊</span>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('assets')">
+                        <span class="nav-icon">💻</span>Assets
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('licenses')">
+                        <span class="nav-icon">📜</span>Licenses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="showSection('people')">
+                        <span class="nav-icon">👥</span>People
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1 class="header-title" id="pageTitle">Dashboard Overview</h1>
+                <div class="header-actions">
+                    <button class="btn" onclick="showModal('addModal')">
+                        <span>➕</span>Add New
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <span>📥</span>Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAssets">24</div>
+                        <div class="stat-label">Total Assets</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalLicenses">12</div>
+                        <div class="stat-label">Active Licenses</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalPeople">8</div>
+                        <div class="stat-label">People</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="expiringSoon">3</div>
+                        <div class="stat-label">Expiring Soon</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assets Section -->
+            <div id="assets" class="content-section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Assets Management</h3>
+                        <input type="text" class="search-box" placeholder="Search assets..." onkeyup="searchTable('assetsTable', this.value)">
+                    </div>
+                    <table class="data-table" id="assetsTable">
+                        <thead>
+                            <tr>
+                                <th>Asset ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Assigned To</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetsTableBody">
+                            <tr>
+                                <td>AST001</td>
+                                <td>Dell Laptop XPS 13</td>
+                                <td>Laptop</td>
+                                <td>John Smith</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>AST002</td>
+                                <td>iPhone 13 Pro</td>
+                                <td>Mobile</td>
+                                <td>Jane Doe</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>AST003</td>
+                                <td>HP Monitor 27"</td>
+                                <td>Monitor</td>
+                                <td>Mike Johnson</td>
+                                <td><span class="status-badge status-inactive">Inactive</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Licenses Section -->
+            <div id="licenses" class="content-section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Licenses Management</h3>
+                        <input type="text" class="search-box" placeholder="Search licenses..." onkeyup="searchTable('licensesTable', this.value)">
+                    </div>
+                    <table class="data-table" id="licensesTable">
+                        <thead>
+                            <tr>
+                                <th>License ID</th>
+                                <th>Software</th>
+                                <th>Type</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="licensesTableBody">
+                            <tr>
+                                <td>LIC001</td>
+                                <td>Microsoft Office 365</td>
+                                <td>Subscription</td>
+                                <td>2024-12-31</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LIC002</td>
+                                <td>Adobe Creative Suite</td>
+                                <td>Perpetual</td>
+                                <td>2024-08-15</td>
+                                <td><span class="status-badge status-expired">Expired</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LIC003</td>
+                                <td>Antivirus Software</td>
+                                <td>Annual</td>
+                                <td>2025-03-20</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- People Section -->
+            <div id="people" class="content-section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">People Management</h3>
+                        <input type="text" class="search-box" placeholder="Search people..." onkeyup="searchTable('peopleTable', this.value)">
+                    </div>
+                    <table class="data-table" id="peopleTable">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="peopleTableBody">
+                            <tr>
+                                <td>EMP001</td>
+                                <td>John Smith</td>
+                                <td>IT</td>
+                                <td>john.smith@company.com</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>EMP002</td>
+                                <td>Jane Doe</td>
+                                <td>Marketing</td>
+                                <td>jane.doe@company.com</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>EMP003</td>
+                                <td>Mike Johnson</td>
+                                <td>Finance</td>
+                                <td>mike.johnson@company.com</td>
+                                <td><span class="status-badge status-inactive">Inactive</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small">Edit</button>
+                                        <button class="btn btn-small btn-danger">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Item</h2>
+                <span class="close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <form id="addForm">
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="category" onchange="updateForm()">
+                        <option value="">Select Category</option>
+                        <option value="asset">Asset</option>
+                        <option value="license">License</option>
+                        <option value="person">Person</option>
+                    </select>
+                </div>
+                <div id="dynamicForm"></div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Add Item</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
+</body>
+</html>
