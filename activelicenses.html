@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>License Management Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .sidebar-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            margin: 5px 0;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            padding-left: 30px;
+        }
+
+        .nav-icon {
+            margin-right: 10px;
+            width: 20px;
+            display: inline-block;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-card.expiring .stat-number {
+            color: #ffc107;
+        }
+
+        .stat-card.overused .stat-number {
+            color: #dc3545;
+        }
+
+        .stat-card.available .stat-number {
+            color: #28a745;
+        }
+
+        /* License Tabs */
+        .license-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .table-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .search-box {
+            padding: 10px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-expired {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-expiring {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-trial {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-low {
+            background-color: #28a745;
+        }
+
+        .progress-medium {
+            background-color: #ffc107;
+        }
+
+        .progress-high {
+            background-color: #dc3545;
+        }
+
+        .usage-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .usage-text {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .license-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .license-details {
+            display: flex;
+            align-items: center;
+        }
+
+        .license-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .license-version {
+            font-size: 12px;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e1e1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 600px;
+        }
+
+        .sortable-header {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+
+        .sortable-header:hover {
+            background: #e9ecef;
+        }
+
+        .sort-indicator {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        .sort-asc::after {
+            content: '▲';
+        }
+
+        .sort-desc::after {
+            content: '▼';
+        }
+
+        .expiry-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-icon {
+            color: #856404;
+            font-size: 20px;
+        }
+
+        .warning-text {
+            color: #856404;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Asset Register</h2>
+                <p class="sidebar-subtitle">Management System</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">
+                        <span class="nav-icon">📊</span>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="totalassets.html">
+                        <span class="nav-icon">💻</span>Assets
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="activelicenses.html">
+                        <span class="nav-icon">📜</span>Licenses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="people.html">
+                        <span class="nav-icon">👥</span>People
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1 class="header-title">License Management</h1>
+                <div class="header-actions">
+                    <button class="btn" onclick="showModal('addLicenseModal')">
+                        <span>➕</span>Add License
+                    </button>
+                    <button class="btn btn-info" onclick="showModal('renewalModal')">
+                        <span>🔄</span>Bulk Renewal
+                    </button>
+                    <button class="btn btn-success" onclick="generateReport()">
+                        <span>📊</span>License Report
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <span>📥</span>Export Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Expiry Warning -->
+            <div class="expiry-warning" id="expiryWarning">
+                <span class="warning-icon">⚠️</span>
+                <div class="warning-text">
+                    <strong>3 licenses</strong> are expiring within the next 30 days. Review renewal requirements.
+                </div>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalLicenses">47</div>
+                    <div class="stat-label">Total Licenses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeLicenses">42</div>
+                    <div class="stat-label">Active</div>
+                </div>
+                <div class="stat-card expiring">
+                    <div class="stat-number" id="expiringLicenses">3</div>
+                    <div class="stat-label">Expiring Soon</div>
+                </div>
+                <div class="stat-card overused">
+                    <div class="stat-number" id="overusedLicenses">2</div>
+                    <div class="stat-label">Over-utilized</div>
+                </div>
+                <div class="stat-card available">
+                    <div class="stat-number" id="availableSeats">148</div>
+                    <div class="stat-label">Available Seats</div>
+                </div>
+            </div>
+
+            <!-- License Tabs -->
+            <div class="license-tabs">
+                <button class="tab-button active" onclick="showLicenseTab('active')">Active Licenses</button>
+                <button class="tab-button" onclick="showLicenseTab('expired')">Expired</button>
+                <button class="tab-button" onclick="showLicenseTab('allocations')">User Allocations</button>
+                <button class="tab-button" onclick="showLicenseTab('compliance')">Compliance</button>
+            </div>
+
+            <!-- Active Licenses Table -->
+            <div id="activeTab" class="table-container">
+                <div class="table-header">
+                    <h3 class="table-title">Active Software Licenses</h3>
+                    <input type="text" class="search-box" placeholder="Search licenses..." onkeyup="searchTable('activeTable', this.value)">
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="activeTable">
+                        <thead>
+                            <tr>
+                                <th class="sortable-header" onclick="sortTable('activeTable', 0)">
+                                    Software<span class="sort-indicator"></span>
+                                </th>
+                                <th class="sortable-header" onclick="sortTable('activeTable', 1)">
+                                    License Type<span class="sort-indicator"></span>
+                                </th>
+                                <th class="sortable-header" onclick="sortTable('activeTable', 2)">
+                                    Total Seats<span class="sort-indicator"></span>
+                                </th>
+                                <th class="sortable-header" onclick="sortTable('activeTable', 3)">
+                                    Usage<span class="sort-indicator"></span>
+                                </th>
+                                <th class="sortable-header" onclick="sortTable('activeTable', 4)">
+                                    Cost/Month<span class="sort-indicator"></span>
+                                </th>
+                                <th class="sortable-header" onclick="sortTable('activeTable', 5)">
+                                    Expiry Date<span class="sort-indicator"></span>
+                                </th>
+                                <th class="sortable-header" onclick="sortTable('activeTable', 6)">
+                                    Status<span class="sort-indicator"></span>
+                                </th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="license-details">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23FF4500'%3E%3Crect width='24' height='24' rx='4'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-size='10' font-weight='bold'%3EO365%3C/text%3E%3C/svg%3E" alt="Office 365" class="license-icon">
+                                        <div>
+                                            <div class="license-name">Microsoft Office 365</div>
+                                            <div class="license-version">Business Premium 2024</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Subscription</td>
+                                <td>100</td>
+                                <td>
+                                    <div class="usage-info">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill progress-high" style="width: 85%"></div>
+                                        </div>
+                                        <div class="usage-text">85/100 used (15 available)</div>
+                                    </div>
+                                </td>
+                                <td>$2,200</td>
+                                <td>2025-12-31</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-info" onclick="viewLicense('LIC001')">View</button>
+                                        <button class="btn btn-small btn-warning" onclick="manageLicense('LIC001')">Manage</button>
+                                        <button class="btn btn-small btn-success" onclick="allocateSeats('LIC001')">Allocate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="license-details">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23FF0000'%3E%3Crect width='24' height='24' rx='4'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-size='8' font-weight='bold'%3EAdobe%3C/text%3E%3C/svg%3E" alt="Adobe" class="license-icon">
+                                        <div>
+                                            <div class="license-name">Adobe Creative Suite</div>
+                                            <div class="license-version">All Apps 2024</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Subscription</td>
+                                <td>20</td>
+                                <td>
+                                    <div class="usage-info">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill progress-medium" style="width: 90%"></div>
+                                        </div>
+                                        <div class="usage-text">18/20 used (2 available)</div>
+                                    </div>
+                                </td>
+                                <td>$1,080</td>
+                                <td>2025-06-30</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-info" onclick="viewLicense('LIC002')">View</button>
+                                        <button class="btn btn-small btn-warning" onclick="manageLicense('LIC002')">Manage</button>
+                                        <button class="btn btn-small btn-success" onclick="allocateSeats('LIC002')">Allocate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="license-details">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%234CAF50'%3E%3Crect width='24' height='24' rx='4'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-size='8' font-weight='bold'%3EAVAST%3C/text%3E%3C/svg%3E" alt="Antivirus" class="license-icon">
+                                        <div>
+                                            <div class="license-name">Antivirus Enterprise</div>
+                                            <div class="license-version">Business Security 2024</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Annual</td>
+                                <td>150</td>
+                                <td>
+                                    <div class="usage-info">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill progress-medium" style="width: 95%"></div>
+                                        </div>
+                                        <div class="usage-text">142/150 used (8 available)</div>
+                                    </div>
+                                </td>
+                                <td>$450</td>
+                                <td>2025-03-15</td>
+                                <td><span class="status-badge status-expiring">Expiring Soon</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-info" onclick="viewLicense('LIC003')">View</button>
+                                        <button class="btn btn-small btn-warning" onclick="renewLicense('LIC003')">Renew</button>
+                                        <button class="btn btn-small btn-success" onclick="allocateSeats('LIC003')">Allocate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="license-details">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%232196F3'%3E%3Crect width='24' height='24' rx='4'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-size='8' font-weight='bold'%3ESlack%3C/text%3E%3C/svg%3E" alt="Slack" class="license-icon">
+                                        <div>
+                                            <div class="license-name">Slack Business+</div>
+                                            <div class="license-version">Team Collaboration</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Monthly</td>
+                                <td>75</td>
+                                <td>
+                                    <div class="usage-info">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill progress-low" style="width: 65%"></div>
+                                        </div>
+                                        <div class="usage-text">49/75 used (26 available)</div>
+                                    </div>
+                                </td>
+                                <td>$950</td>
+                                <td>Auto-renews</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-info" onclick="viewLicense('LIC004')">View</button>
+                                        <button class="btn btn-small btn-warning" onclick="manageLicense('LIC004')">Manage</button>
+                                        <button class="btn btn-small btn-success" onclick="allocateSeats('LIC004')">Allocate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Expired Licenses Table -->
+            <div id="expiredTab" class="table-container" style="display: none;">
+                <div class="table-header">
+                    <h3 class="table-title">Expired Licenses</h3>
+                    <input type="text" class="search-box" placeholder="Search expired licenses..." onkeyup="searchTable('expiredTable', this.value)">
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="expiredTable">
+                        <thead>
+                            <tr>
+                                <th>Software</th>
+                                <th>License Type</th>
+                                <th>Seats</th>
+                                <th>Expired Date</th>
+                                <th>Last Cost</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="license-details">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23666'%3E%3Crect width='24' height='24' rx='4'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-size='8' font-weight='bold'%3EWinRAR%3C/text%3E%3C/svg%3E" alt="WinRAR" class="license-icon">
+                                        <div>
+                                            <div class="license-name">WinRAR Professional</div>
+                                            <div class="license-version">Version 6.2</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Perpetual</td>
+                                <td>10</td>
+                                <td>2024-11-30</td>
+                                <td>$290</td>
+                                <td><span class="status-badge status-expired">Expired</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-success" onclick="renewLicense('LIC005')">Renew</button>
+                                        <button class="btn btn-small btn-danger" onclick="deleteLicense('LIC005')">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="license-details">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23666'%3E%3Crect width='24' height='24' rx='4'/%3E%3Ctext x='12' y='16' text-anchor='middle' fill='white' font-size='6' font-weight='bold'%3EZoom%3C/text%3E%3C/svg%3E" alt="Zoom" class="license-icon">
+                                        <div>
+                                            <div class="license-name">Zoom Pro</div>
+                                            <div class="license-version">Video Conferencing</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Annual</td>
+                                <td>25</td>
+                                <td>2024-09-15</td>
+                                <td>$375</td>
+                                <td><span class="status-badge status-expired">Expired</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-success" onclick="renewLicense('LIC006')">Renew</button>
+                                        <button class="btn btn-small btn-danger" onclick="deleteLicense('LIC006')">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- User Allocations Table -->
+            <div id="allocationsTab" class="table-container" style="display: none;">
+                <div class="table-header">
+                    <h3 class="table-title">License Allocations by User</h3>
+                    <input type="text" class="search-box" placeholder="Search users..." onkeyup="searchTable('allocationsTable', this.value)">
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="allocationsTable">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Department</th>
+                                <th>Assigned Licenses</th>
+                                <th>Last Active</th>
+                                <th>Total Cost</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #667eea; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
+                                        <div>
+                                            <div style="font-weight: 600;">John Doe</div>
+                                            <div style="font-size: 12px; color: #666;">john.doe@company.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Engineering</td>
+                                <td>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                        <span class="status-badge status-active">Office 365</span>
+                                        <span class="status-badge status-active">Adobe CS</span>
+                                        <span class="status-badge status-active">Slack</span>
+                                    </div>
+                                </td>
+                                <td>2025-06-02</td>
+                                <td>$76/month</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-info" onclick="viewUserLicenses('USER001')">View</button>
+                                        <button class="btn btn-small btn-warning" onclick="editUserLicenses('USER001')">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #28a745; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JS</div>
+                                        <div>
+                                            <div style="font-weight: 600;">Jane Smith</div>
+                                            <div style="font-size: 12px; color: #666;">jane.smith@company.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Marketing</td>
+                                <td>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                        <span class="status-badge status-active">Office 365</span>
+                                        <span class="status-badge status-active">Adobe CS</span>
+                                    </div>
+                                </td>
+                                <td>2025-06-03</td>
+                                <td>$76/month</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-small btn-info" onclick="viewUserLicenses('USER002')">View</button>
+                                        <button class="btn btn-small btn-warning" onclick="editUserLicenses('USER002')">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Compliance Table -->
+            <div id="complianceTab" class="table-container" style="display: none;">
+                <div class="table-header">
+                    <h3 class="table-title">License Compliance Overview</h3>
+                    <input type="text" class="search-box" placeholder="Search compliance issues..." onkeyup="searchTable('complianceTable', this.value)">
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="complianceTable">
+                        <thead>
+                            <tr>
+                                <th>Software</th>
+                                <th>Compliance Status</th>
+                                <th>Issues Found</th>
+                                <th>Risk Level</th>
+                                <th>Last Audit</th>
+                                <th>Actions Required</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Microsoft Office 365</td>
+                                <td><span class="status-badge status-active">Compliant</span></td>
+                                <td>0</td>
+                                <td><span class="status-badge status-active">Low</span></td>
+                                <td>2025-05-15</td>
+                                <td>None</td>
+                            </tr>
+                            <tr>
+                                <td>Adobe Creative Suite</td>
+                                <td><span class="status-badge status-expiring">Review Required</span></td>
+                                <td>2</td>
+                                <td><span class="status-badge status-expiring">Medium</span></td>
+                                <td>2025-04-20</td>
+                                <td>
+                                    <button class="btn btn-small btn-warning">Review Usage</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Antivirus Enterprise</td>
+                                <td><span class="status-badge status-expired">Non-Compliant</span></td>
+                                <td>5</td>
+                                <td><span class="status-badge status-expired">High</span></td>
+                                <td>2025-03-01</td>
+                                <td>
+                                    <button class="btn btn-small btn-danger">Immediate Action</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add License Modal -->
+    <div id="addLicenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New License</h2>
+                <span class="close" onclick="closeModal('addLicenseModal')">&times;</span>
+            </div>
+            <form onsubmit="addNewLicense(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Software Name</label>
+                        <input type="text" class="form-input" name="softwareName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">License Type</label>
+                        <select class="form-select" name="licenseType" required>
+                            <option>Subscription</option>
+                            <option>Perpetual</option>
+                            <option>Annual</option>
+                            <option>Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Total Seats</label>
+                        <input type="number" class="form-input" name="totalSeats" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cost per Month</label>
+                        <input type="number" class="form-input" name="monthlyCost" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Purchase Date</label>
+                        <input type="date" class="form-input" name="purchaseDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="date" class="form-input" name="expiryDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" name="notes" placeholder="Additional notes about this license..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addLicenseModal')">Cancel</button>
+                    <button type="submit" class="btn">Add License</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bulk Renewal Modal -->
+    <div id="renewalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Bulk License Renewal</h2>
+                <span class="close" onclick="closeModal('renewalModal')">&times;</span>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <h4>Select licenses to renew:</h4>
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+                    <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <input type="checkbox" style="margin-right: 10px;"> Adobe Creative Suite (Expires: 2025-06-30)
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <input type="checkbox" style="margin-right: 10px;"> Antivirus Enterprise (Expires: 2025-03-15)
+                    </label>
+                    <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <input type="checkbox" style="margin-right: 10px;"> WinRAR Professional (Expired: 2024-11-30)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Renewal Period</label>
+                <select class="form-select">
+                    <option>1 Year</option>
+                    <option>2 Years</option>
+                    <option>3 Years</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('renewalModal')">Cancel</button>
+                <button type="button" class="btn" onclick="processBulkRenewal()">Process Renewals</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let licenseData = {
+            active: [],
+            expired: [],
+            allocations: [],
+            compliance: []
+        };
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            showLicenseTab('active');
+        });
+
+        // Tab switching
+        function showLicenseTab(tabName) {
+            // Hide all tabs
+            document.getElementById('activeTab').style.display = 'none';
+            document.getElementById('expiredTab').style.display = 'none';
+            document.getElementById('allocationsTab').style.display = 'none';
+            document.getElementById('complianceTab').style.display = 'none';
+
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Search functionality
+        function searchTable(tableId, searchTerm) {
+            const table = document.getElementById(tableId);
+            const rows = table.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm.toLowerCase())) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Sorting functionality
+        function sortTable(tableId, columnIndex) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const header = table.querySelectorAll('th')[columnIndex];
+            
+            // Determine sort direction
+            const isAscending = !header.classList.contains('sort-asc');
+            
+            // Clear all sort indicators
+            table.querySelectorAll('th').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+            });
+            
+            // Add appropriate sort indicator
+            header.classList.add(isAscending ? 'sort-asc' : 'sort-desc');
+            
+            // Sort rows
+            rows.sort((a, b) => {
+                const aValue = a.cells[columnIndex].textContent.trim();
+                const bValue = b.cells[columnIndex].textContent.trim();
+                
+                // Check if values are numbers
+                const aNum = parseFloat(aValue.replace(/[^0-9.-]/g, ''));
+                const bNum = parseFloat(bValue.replace(/[^0-9.-]/g, ''));
+                
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return isAscending ? aNum - bNum : bNum - aNum;
+                }
+                
+                // String comparison
+                return isAscending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+            });
+            
+            // Reorder rows in table
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        // License management functions
+        function viewLicense(licenseId) {
+            alert(`Viewing details for license: ${licenseId}`);
+        }
+
+        function manageLicense(licenseId) {
+            alert(`Managing license: ${licenseId}`);
+        }
+
+        function allocateSeats(licenseId) {
+            alert(`Allocating seats for license: ${licenseId}`);
+        }
+
+        function renewLicense(licenseId) {
+            if (confirm(`Renew license ${licenseId}?`)) {
+                alert(`License ${licenseId} renewal initiated`);
+                updateStats();
+            }
+        }
+
+        function deleteLicense(licenseId) {
+            if (confirm(`Delete license ${licenseId}? This action cannot be undone.`)) {
+                alert(`License ${licenseId} deleted`);
+                updateStats();
+            }
+        }
+
+        function viewUserLicenses(userId) {
+            alert(`Viewing licenses for user: ${userId}`);
+        }
+
+        function editUserLicenses(userId) {
+            alert(`Editing licenses for user: ${userId}`);
+        }
+
+        // Form submission
+        function addNewLicense(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const licenseData = {};
+            
+            for (let [key, value] of formData.entries()) {
+                licenseData[key] = value;
+            }
+            
+            console.log('New license data:', licenseData);
+            alert('License added successfully!');
+            closeModal('addLicenseModal');
+            event.target.reset();
+            updateStats();
+        }
+
+        function processBulkRenewal() {
+            const checkboxes = document.querySelectorAll('#renewalModal input[type="checkbox"]:checked');
+            if (checkboxes.length === 0) {
+                alert('Please select at least one license to renew.');
+                return;
+            }
+            
+            alert(`Processing renewal for ${checkboxes.length} licenses...`);
+            closeModal('renewalModal');
+            updateStats();
+        }
+
+        // Utility functions
+        function updateStats() {
+            // This would normally fetch real data from an API
+            document.getElementById('totalLicenses').textContent = '47';
+            document.getElementById('activeLicenses').textContent = '42';
+            document.getElementById('expiringLicenses').textContent = '3';
+            document.getElementById('overusedLicenses').textContent = '2';
+            document.getElementById('availableSeats').textContent = '148';
+        }
+
+        function generateReport() {
+            alert('Generating comprehensive license report...');
+        }
+
+        function exportData() {
+            alert('Exporting license data to CSV...');
+        }
+
+        // Auto-refresh stats every 5 minutes
+        setInterval(updateStats, 300000);
+    </script>
+</body>
+</html>
