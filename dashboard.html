@@ -8,36 +8,35 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2 class="sidebar-title">Asset Register</h2>
-                <p class="sidebar-subtitle">Management System</p>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a class="nav-link active" onclick="showSection('dashboard')">
-                        <span class="nav-icon">📊</span>Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" onclick="showSection('assets')">
-                        <span class="nav-icon">💻</span>Assets
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" onclick="showSection('licenses')">
-                        <span class="nav-icon">📜</span>Licenses
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" onclick="showSection('people')">
-                        <span class="nav-icon">👥</span>People
-                    </a>
-                </li>
-            </ul>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Asset Register</h2>
+            <p class="sidebar-subtitle">Management System</p>
         </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a class="nav-link" href="dashboard.html">
+                    <span class="nav-icon">📊</span>Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="totalassets.html">
+                    <span class="nav-icon">💻</span>Assets
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="activelicenses.html">
+                    <span class="nav-icon">📜</span>Licenses
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="people.html">
+                    <span class="nav-icon">👥</span>People
+                </a>
+            </li>
+        </ul>
+    </div>
+    
 
         <!-- Main Content -->
         <div class="main-content">
