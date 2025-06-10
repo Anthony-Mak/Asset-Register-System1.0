@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Register Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .sidebar-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        .nav-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Tab Styles */
+        .phone-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-button:hover {
+            color: #667eea;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 250px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table th {
+            background-color: #f7fafc;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .data-table th:hover {
+            background-color: #edf2f7;
+        }
+
+        .data-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .sort-indicator {
+            margin-left: 5px;
+            opacity: 0.5;
+        }
+
+        .sort-asc .sort-indicator::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        .sort-desc .sort-indicator::after {
+            content: ' ↓';
+            opacity: 1;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-assigned {
+            background-color: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-unallocated {
+            background-color: #fed7d7;
+            color: #742a2a;
+        }
+
+        .status-returned {
+            background-color: #bee3f8;
+            color: #1a365d;
+        }
+
+        .status-retired {
+            background-color: #e2e8f0;
+            color: #4a5568;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #a0aec0;
+        }
+
+        .close:hover {
+            color: #e53e3e;
+        }
+
+        /* Form Styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #2d3748;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        form {
+            padding: 20px;
+        }
+
+        .audit-trail {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .audit-trail h4 {
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .audit-entry {
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #4a5568;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+
+            .main-content {
+                order: 1;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-actions {
+                flex-wrap: wrap;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .phone-tabs {
+                flex-wrap: wrap;
+            }
+
+            .table-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Column Toggle Styles */
+        .column-toggle {
+            position: relative;
+        }
+
+        .column-toggle-btn {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .column-toggle-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 100;
+            min-width: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .column-toggle-dropdown.show {
+            display: block;
+        }
+
+        .column-option {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .column-option:hover {
+            background-color: #f7fafc;
+        }
+
+        .column-option input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .column-option label {
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .hidden-column {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Phone Register</h2>
+                <p class="sidebar-subtitle">Management System</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('dashboard')">
+                        <span class="nav-icon">📊</span>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" onclick="showSection('phones')">
+                        <span class="nav-icon">📱</span>Phones
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('reports')">
+                        <span class="nav-icon">📋</span>Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('people')">
+                        <span class="nav-icon">👥</span>People
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1 class="header-title" id="pageTitle">Phone Management</h1>
+                <div class="header-actions">
+                    <button class="btn" onclick="showModal('addPhoneModal')">
+                        <span>➕</span>Add Phone
+                    </button>
+                    <button class="btn btn-success" onclick="bulkAudit()">
+                        <span>📋</span>Bulk Audit
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <span>📥</span>Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="content-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalPhones">32</div>
+                        <div class="stat-label">Total Phones</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="assignedPhones">24</div>
+                        <div class="stat-label">Assigned</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="unallocatedPhones">6</div>
+                        <div class="stat-label">Unallocated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="returnedPhones">2</div>
+                        <div class="stat-label">Returned</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phones Section -->
+            <div id="phones" class="content-section active">
+                <!-- Phone Status Tabs -->
+                <div class="phone-tabs">
+                    <button class="tab-button active" onclick="showPhoneTab('assigned')">Assigned Phones</button>
+                    <button class="tab-button" onclick="showPhoneTab('unallocated')">Unallocated Phones</button>
+                    <button class="tab-button" onclick="showPhoneTab('returned')">Returned Phones</button>
+                </div>
+
+                <!-- Assigned Phones Table -->
+                <div id="assignedTab" class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Assigned Phones</h3>
+                        <div class="table-controls">
+                            <input type="text" class="search-box" placeholder="Search assigned phones..." onkeyup="searchTable('assignedTable', this.value)">
+                            <div class="column-toggle">
+                                <button class="column-toggle-btn" onclick="toggleColumnDropdown('assignedColumns')">
+                                    <span>📋</span>Columns ▼
+                                </button>
+                                <div id="assignedColumns" class="column-toggle-dropdown">
+                                    <div class="column-option">
+                                        <input type="checkbox" id="col-type" checked onchange="toggleColumn('assignedTable', 0, this.checked)">
+                                        <label for="col-type">Type</label>
+                                    </div>
+                                    <div class="column-option">
+                                        <input type="checkbox" id="col-model" checked onchange="toggleColumn('assignedTable', 1, this.checked)">
+                                        <label for="col-model">Model/IMEI</label>
+                                    </div>
+                                    <div class="column-option">
+                                        <input type="checkbox" id="col-serial" checked onchange="toggleColumn('assignedTable', 2, this.checked)">
+                                        <label for="col-serial">Serial Number</label>
+                                    </div>
+                                    <div class="column-option">
+                                        <input type="checkbox" id="col-allocated" checked onchange="toggleColumn('assignedTable', 3, this.checked)">
+                                        <label for="col-allocated">Allocated To</label>
+                                    </div>
+                                    <div class="column-option">
+                                        <input type="checkbox" id="col-status" checked onchange="toggleColumn('assignedTable', 4, this.checked)">
+                                        <label for="col-status">Status</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="assignedTable">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable('assignedTable', 0)">Type<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('assignedTable', 1)">Model/IMEI<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('assignedTable', 2)">Serial Number<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('assignedTable', 3)">Allocated To<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('assignedTable', 4)">Status<span class="sort-indicator"></span></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>iPhone</td>
+                                    <td>iPhone 14 Pro / 356789012345678</td>
+                                    <td>F2LDN1MQ5L</td>
+                                    <td>John Smith</td>
+                                    <td><span class="status-badge status-assigned">Assigned</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-info" onclick="updatePhone('iPhone 14 Pro')">Update</button>
+                                            <button class="btn btn-small btn-warning" onclick="auditPhone('iPhone 14 Pro')">Audit</button>
+                                            <button class="btn btn-small btn-danger" onclick="deletePhone('iPhone 14 Pro')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Samsung</td>
+                                    <td>Galaxy S23 Ultra / 358901234567890</td>
+                                    <td>R52NB0ABCDE</td>
+                                    <td>Jane Doe</td>
+                                    <td><span class="status-badge status-assigned">Assigned</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-info" onclick="updatePhone('Galaxy S23 Ultra')">Update</button>
+                                            <button class="btn btn-small btn-warning" onclick="auditPhone('Galaxy S23 Ultra')">Audit</button>
+                                            <button class="btn btn-small btn-danger" onclick="deletePhone('Galaxy S23 Ultra')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>iPhone</td>
+                                    <td>iPhone 13 / 357890123456789</td>
+                                    <td>DMQM2NQ5L</td>
+                                    <td>Mike Johnson</td>
+                                    <td><span class="status-badge status-assigned">Assigned</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-info" onclick="updatePhone('iPhone 13')">Update</button>
+                                            <button class="btn btn-small btn-warning" onclick="auditPhone('iPhone 13')">Audit</button>
+                                            <button class="btn btn-small btn-danger" onclick="deletePhone('iPhone 13')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Google</td>
+                                    <td>Pixel 7 Pro / 359012345678901</td>
+                                    <td>GA02ABCDEF</td>
+                                    <td>Sarah Wilson</td>
+                                    <td><span class="status-badge status-assigned">Assigned</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-info" onclick="updatePhone('Pixel 7 Pro')">Update</button>
+                                            <button class="btn btn-small btn-warning" onclick="auditPhone('Pixel 7 Pro')">Audit</button>
+                                            <button class="btn btn-small btn-danger" onclick="deletePhone('Pixel 7 Pro')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Unallocated Phones Table -->
+                <div id="unallocatedTab" class="table-container" style="display: none;">
+                    <div class="table-header">
+                        <h3 class="table-title">Unallocated Phones</h3>
+                        <div class="table-controls">
+                            <input type="text" class="search-box" placeholder="Search unallocated phones..." onkeyup="searchTable('unallocatedTable', this.value)">
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="unallocatedTable">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable('unallocatedTable', 0)">Type<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('unallocatedTable', 1)">Model/IMEI<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('unallocatedTable', 2)">Serial Number<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('unallocatedTable', 3)">Status<span class="sort-indicator"></span></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>iPhone</td>
+                                    <td>iPhone 12 / 351234567890123</td>
+                                    <td>FKQP1NQ5L</td>
+                                    <td><span class="status-badge status-unallocated">Unallocated</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-success" onclick="assignPhone('iPhone 12')">Assign</button>
+                                            <button class="btn btn-small btn-info" onclick="updatePhone('iPhone 12')">Update</button>
+                                            <button class="btn btn-small btn-danger" onclick="deletePhone('iPhone 12')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Samsung</td>
+                                    <td>Galaxy A54 / 352345678901234</td>
+                                    <td>R58MB0FGHI</td>
+                                    <td><span class="status-badge status-unallocated">Unallocated</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-success" onclick="assignPhone('Galaxy A54')">Assign</button>
+                                            <button class="btn btn-small btn-info" onclick="updatePhone('Galaxy A54')">Update</button>
+                                            <button class="btn btn-small btn-danger" onclick="deletePhone('Galaxy A54')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Returned Phones Table -->
+                <div id="returnedTab" class="table-container" style="display: none;">
+                    <div class="table-header">
+                        <h3 class="table-title">Returned Phones</h3>
+                        <div class="table-controls">
+                            <input type="text" class="search-box" placeholder="Search returned phones..." onkeyup="searchTable('returnedTable', this.value)">
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="returnedTable">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable('returnedTable', 0)">Type<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('returnedTable', 1)">Model/IMEI<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('returnedTable', 2)">Serial Number<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('returnedTable', 3)">Previously Assigned To<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('returnedTable', 4)">Return Date<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('returnedTable', 5)">Status<span class="sort-indicator"></span></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>iPhone</td>
+                                    <td>iPhone 11 / 353456789012345</td>
+                                    <td>DM5Q2NQ5L</td>
+                                    <td>Tom Brown</td>
+                                    <td>2024-05-20</td>
+                                    <td><span class="status-badge status-returned">Returned</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-success" onclick="reassignPhone('iPhone 11')">Reassign</button>
+                                            <button class="btn btn-small btn-info" onclick="updatePhone('iPhone 11')">Update</button>
+                                            <button class="btn btn-small btn-danger" onclick="deletePhone('iPhone 11')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Samsung</td>
+                                    <td>Galaxy S21 / 354567890123456</td>
+                                    <td>R59NC0JKLM</td>
+                                    <td>Lisa Davis</td>
+                                    <td>2024-05-15</td>
+                                    <td><span class="status-badge status-returned">Returned</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-success" onclick="reassignPhone('Galaxy S21')">Reassign</button>
+                                            <button class="btn btn-small btn-info" onclick="updatePhone('Galaxy S21')">Update</button>
+                                            <button class="btn btn-small btn-danger" onclick="deletePhone('Galaxy S21')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div id="reports" class="content-section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Reports & Analytics</h3>
+                        <div class="table-controls">
+                            <button class="btn" onclick="generateReport('summary')">
+                                <span>📊</span>Summary Report
+                            </button>
+                            <button class="btn btn-info" onclick="generateReport('audit')">
+                                <span>🔍</span>Audit Report
+                            </button>
+                            <button class="btn btn-success" onclick="generateReport('inventory')">
+                                <span>📦</span>Inventory Report
+                            </button>
+                        </div>
+                    </div>
+                    <div style="padding: 40px; text-align: center; color: #718096;">
+                        <h4>Select a report type to view analytics</h4>
+                        <p>Use the buttons above to generate detailed reports about your phone inventory.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- People Section -->
+            <div id="people" class="content-section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">People Management</h3>
+                        <div class="table-controls">
+                            <input type="text" class="search-box" placeholder="Search people..." onkeyup="searchTable('peopleTable', this.value)">
+                            <button class="btn" onclick="showModal('addPersonModal')">
+                                <span>👤</span>Add Person
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="peopleTable">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable('peopleTable', 0)">Name<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('peopleTable', 1)">Department<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('peopleTable', 2)">Position<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('peopleTable', 3)">Phone Assigned<span class="sort-indicator"></span></th>
+                                    <th onclick="sortTable('peopleTable', 4)">Status<span class="sort-indicator"></span></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>John Smith</td>
+                                    <td>IT Department</td>
+                                    <td>Senior Developer</td>
+                                    <td>iPhone 14 Pro</td>
+                                    <td><span class="status-badge status-assigned">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-info" onclick="updatePerson('John Smith')">Update</button>
+                                            <button class="btn btn-small btn-warning" onclick="viewPersonHistory('John Smith')">History</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Jane Doe</td>
+                                    <td>Marketing</td>
+                                    <td>Marketing Manager</td>
+                                    <td>Galaxy S23 Ultra</td>
+                                    <td><span class="status-badge status-assigned">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-info" onclick="updatePerson('Jane Doe')">Update</button>
+                                            <button class="btn btn-small btn-warning" onclick="viewPersonHistory('Jane Doe')">History</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Mike Johnson</td>
+                                    <td>Sales</td>
+                                    <td>Sales Representative</td>
+                                    <td>iPhone 13</td>
+                                    <td><span class="status-badge status-assigned">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-info" onclick="updatePerson('Mike Johnson')">Update</button>
+                                            <button class="btn btn-small btn-warning" onclick="viewPersonHistory('Mike Johnson')">History</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Sarah Wilson</td>
+                                    <td>HR</td>
+                                    <td>HR Coordinator</td>
+                                    <td>Pixel 7 Pro</td>
+                                    <td><span class="status-badge status-assigned">Active</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-info" onclick="updatePerson('Sarah Wilson')">Update</button>
+                                            <button class="btn btn-small btn-warning" onclick="viewPersonHistory('Sarah Wilson')">History</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Phone Modal -->
+    <div id="addPhoneModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Phone</h3>
+                <span class="close" onclick="closeModal('addPhoneModal')">&times;</span>
+            </div>
+            <form onsubmit="addPhone(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Phone Type</label>
+                        <select class="form-select" required>
+                            <option value="">Select Type</option>
+                            <option value="iPhone">iPhone</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Google">Google</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Model</label>
+                        <input type="text" class="form-input" placeholder="e.g., iPhone 14 Pro" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">IMEI Number</label>
+                        <input type="text" class="form-input" placeholder="15-digit IMEI" pattern="[0-9]{15}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Serial Number</label>
+                        <input type="text" class="form-input" placeholder="Device serial number" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" required>
+                            <option value="unallocated">Unallocated</option>
+                            <option value="assigned">Assigned</option>
+                            <option value="returned">Returned</option>
+                            <option value="retired">Retired</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Assigned To (if applicable)</label>
+                        <input type="text" class="form-input" placeholder="Person name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" placeholder="Additional notes..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addPhoneModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Phone</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Person Modal -->
+    <div id="addPersonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Person</h3>
+                <span class="close" onclick="closeModal('addPersonModal')">&times;</span>
+            </div>
+            <form onsubmit="addPerson(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-input" placeholder="Employee ID" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <select class="form-select" required>
+                            <option value="">Select Department</option>
+                            <option value="IT Department">IT Department</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Sales">Sales</option>
+                            <option value="HR">Human Resources</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Operations">Operations</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Position</label>
+                        <input type="text" class="form-input" placeholder="Job title" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" placeholder="email@company.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" placeholder="Phone number">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addPersonModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Person</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update Phone Modal -->
+    <div id="updatePhoneModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Update Phone Details</h3>
+                <span class="close" onclick="closeModal('updatePhoneModal')">&times;</span>
+            </div>
+            <form onsubmit="updatePhoneDetails(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Phone Type</label>
+                        <select class="form-select" id="updatePhoneType" required>
+                            <option value="iPhone">iPhone</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Google">Google</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Model</label>
+                        <input type="text" class="form-input" id="updatePhoneModel" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">IMEI Number</label>
+                        <input type="text" class="form-input" id="updatePhoneIMEI" pattern="[0-9]{15}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Serial Number</label>
+                        <input type="text" class="form-input" id="updatePhoneSerial" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="updatePhoneStatus" required>
+                            <option value="unallocated">Unallocated</option>
+                            <option value="assigned">Assigned</option>
+                            <option value="returned">Returned</option>
+                            <option value="retired">Retired</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Assigned To</label>
+                        <input type="text" class="form-input" id="updatePhoneAssignee" placeholder="Person name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="updatePhoneNotes" placeholder="Additional notes..."></textarea>
+                </div>
+                <div class="audit-trail">
+                    <h4>Audit Trail</h4>
+                    <div id="phoneAuditTrail">
+                        <div class="audit-entry">2024-05-01 - Phone added to inventory by Admin</div>
+                        <div class="audit-entry">2024-05-02 - Assigned to John Smith by Manager</div>
+                        <div class="audit-entry">2024-05-15 - Status updated by IT Support</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('updatePhoneModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Update Phone</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentSort = { table: '', column: -1, direction: 'asc' };
+
+        // Navigation functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard Overview',
+                'phones': 'Phone Management',
+                'reports': 'Reports & Analytics',
+                'people': 'People Management'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionId] || 'Phone Register';
+        }
+
+        // Phone tab functions
+        function showPhoneTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('#phones .table-container').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Table functions
+        function sortTable(tableId, column) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Determine sort direction
+            let direction = 'asc';
+            if (currentSort.table === tableId && currentSort.column === column) {
+                direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            }
+            
+            // Update sort indicators
+            table.querySelectorAll('th').forEach((th, index) => {
+                th.classList.remove('sort-asc', 'sort-desc');
+                if (index === column) {
+                    th.classList.add('sort-' + direction);
+                }
+            });
+            
+            // Sort rows
+            rows.sort((a, b) => {
+                const aText = a.cells[column].textContent.trim();
+                const bText = b.cells[column].textContent.trim();
+                
+                if (direction === 'asc') {
+                    return aText.localeCompare(bText);
+                } else {
+                    return bText.localeCompare(aText);
+                }
+            });
+            
+            // Reorder table
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Update current sort
+            currentSort = { table: tableId, column: column, direction: direction };
+        }
+
+        function searchTable(tableId, searchTerm) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = tbody.querySelectorAll('tr');
+            
+            searchTerm = searchTerm.toLowerCase();
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        // Column toggle functions
+        function toggleColumnDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.classList.toggle('show');
+            
+            // Close other dropdowns
+            document.querySelectorAll('.column-toggle-dropdown').forEach(dd => {
+                if (dd.id !== dropdownId) {
+                    dd.classList.remove('show');
+                }
+            });
+        }
+
+        function toggleColumn(tableId, columnIndex, show) {
+            const table = document.getElementById(tableId);
+            const ths = table.querySelectorAll('th');
+            const rows = table.querySelectorAll('tbody tr');
+            
+            if (show) {
+                ths[columnIndex].classList.remove('hidden-column');
+                rows.forEach(row => {
+                    if (row.cells[columnIndex]) {
+                        row.cells[columnIndex].classList.remove('hidden-column');
+                    }
+                });
+            } else {
+                ths[columnIndex].classList.add('hidden-column');
+                rows.forEach(row => {
+                    if (row.cells[columnIndex]) {
+                        row.cells[columnIndex].classList.add('hidden-column');
+                    }
+                });
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.column-toggle')) {
+                document.querySelectorAll('.column-toggle-dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
+
+        // Phone management functions
+        function addPhone(event) {
+            event.preventDefault();
+            alert('Phone added successfully!');
+            closeModal('addPhoneModal');
+            // Here you would typically send data to server
+        }
+
+        function updatePhone(phoneName) {
+            showModal('updatePhoneModal');
+            // Pre-populate form with phone data
+            document.getElementById('updatePhoneModel').value = phoneName;
+        }
+
+        function updatePhoneDetails(event) {
+            event.preventDefault();
+            alert('Phone updated successfully!');
+            closeModal('updatePhoneModal');
+        }
+
+        function deletePhone(phoneName) {
+            if (confirm(`Are you sure you want to delete ${phoneName}?`)) {
+                alert('Phone deleted successfully!');
+                // Remove row from table
+            }
+        }
+
+        function assignPhone(phoneName) {
+            const person = prompt('Enter person name to assign this phone to:');
+            if (person) {
+                alert(`${phoneName} assigned to ${person}`);
+            }
+        }
+
+        function reassignPhone(phoneName) {
+            const person = prompt('Enter new person name to reassign this phone to:');
+            if (person) {
+                alert(`${phoneName} reassigned to ${person}`);
+            }
+        }
+
+        function auditPhone(phoneName) {
+            alert(`Audit initiated for ${phoneName}`);
+        }
+
+        // People management functions
+        function addPerson(event) {
+            event.preventDefault();
+            alert('Person added successfully!');
+            closeModal('addPersonModal');
+        }
+
+        function updatePerson(personName) {
+            alert(`Update person: ${personName}`);
+        }
+
+        function viewPersonHistory(personName) {
+            alert(`Viewing history for: ${personName}`);
+        }
+
+        // Bulk operations
+        function bulkAudit() {
+            if (confirm('Start bulk audit for all phones?')) {
+                alert('Bulk audit initiated!');
+            }
+        }
+
+        function exportData() {
+            alert('Exporting data...');
+        }
+
+        // Report generation
+        function generateReport(reportType) {
+            alert(`Generating ${reportType} report...`);
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial active states
+            showSection('phones');
+            
+            // Add some dynamic behavior
+            updateStats();
+        });
+
+        function updateStats() {
+            // In a real application, these would come from your backend
+            document.getElementById('totalPhones').textContent = '32';
+            document.getElementById('assignedPhones').textContent = '24';
+            document.getElementById('unallocatedPhones').textContent = '6';
+            document.getElementById('returnedPhones').textContent = '2';
+        }
+    </script>
+</body>
+</html>
